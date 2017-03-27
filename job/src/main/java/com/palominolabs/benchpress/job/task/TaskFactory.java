@@ -1,11 +1,11 @@
 package com.palominolabs.benchpress.job.task;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * A TaskFactory creates the runnables that actually do the work. Used to create the runnables for one individual
@@ -31,5 +31,6 @@ public interface TaskFactory {
             @Nullable TaskOutputProcessorFactory taskOutputProcessorFactory) throws
             IOException;
 
+    // TODO actually call this somewhere
     void shutdown();
 }
