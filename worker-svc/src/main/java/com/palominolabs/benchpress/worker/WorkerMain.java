@@ -5,10 +5,13 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.palominolabs.benchpress.curator.CuratorModule;
+import com.palominolabs.benchpress.jersey.GuiceServiceLocatorGenerator;
 import com.palominolabs.http.server.HttpServerWrapper;
 import com.palominolabs.http.server.HttpServerWrapperConfig;
 import com.palominolabs.http.server.HttpServerWrapperFactory;
 import java.util.logging.LogManager;
+
+import com.squarespace.jersey2.guice.JerseyGuiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -40,17 +43,19 @@ final class WorkerMain {
         Injector injector = Guice.createInjector(Stage.PRODUCTION, new WorkerMainModule(),
                 getModuleForModuleNamesString(System.getProperty("benchpress.plugin.module-names")));
 
+        JerseyGuiceUtils.install(new GuiceServiceLocatorGenerator(injector));
+
         injector.getInstance(WorkerMain.class).go();
     }
 
     private void go() throws Exception {
-        curatorLifecycleHook.start();
-
         HttpServerWrapperConfig config = new HttpServerWrapperConfig().withHttpServerConnectorConfig(
                 forHttp(workerConfig.getHttpServerIp(), workerConfig.getHttpServerPort()));
         HttpServerWrapper httpServer = httpServerFactory.getHttpServerWrapper(config);
         httpServer.start();
         logger.info("Worker started listening on port " + workerConfig.getHttpServerPort());
+
+        curatorLifecycleHook.start();
 
         workerAdvertiser.initListenInfo(workerConfig.getHttpServerIp(), workerConfig.getHttpServerPort());
         workerAdvertiser.advertiseAvailability();
