@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.palominolabs.benchpress.ipc.Ipc;
 import com.palominolabs.benchpress.jersey.JerseyResourceConfigBase;
 import com.palominolabs.benchpress.jersey.ObjectMapperContextResolver;
+import com.palominolabs.benchpress.worker.http.WorkerControlResource;
 import com.palominolabs.benchpress.worker.http.WorkerJobResource;
 
 public class WorkerJerseyApp extends JerseyResourceConfigBase {
@@ -11,7 +12,7 @@ public class WorkerJerseyApp extends JerseyResourceConfigBase {
     @Inject
     WorkerJerseyApp(@Ipc ObjectMapperContextResolver objectMapperContextResolver) {
         super(objectMapperContextResolver);
-
+        register(WorkerControlResource.class);
         register(WorkerJobResource.class);
     }
 }
